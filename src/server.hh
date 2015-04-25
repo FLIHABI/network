@@ -26,6 +26,12 @@ struct Result
     std::string value;
 };
 
+struct TodoItem
+{
+    int id;
+    std::string bytecode;
+};
+
 /*
  * ============================================================================
  *        Class:  Server
@@ -35,20 +41,39 @@ struct Result
 class Server
 {
     public:
+        /*
+         * CTor for the server.
+         * Launch the broadcaster and the slave handler.
+         */
         Server(int port);
+
+        /*
+         * Descritption: execBytecode ask the server to execute a bytecode
+         * on another machine.
+         *
+         * Result: the integer returned is the id of the bytecode to be
+         * executed.
+         */
         int execBytecode(std::string bytecode);
+
+        /*
+         * Description: getResult give back the result of a bytecode executed
+         * with the id i.
+         *
+         * Result: the struct returned is NULL if the bytecode computation
+         * is not finished of contain a std::string with the result.
+         */
+        Result *getResult(int i);
+
+    private: /* Private methods */
         static void handler();
+        void setResult(int i, std::string s);
+        int getResultEmplacement();
 
-
-        /* Getter for slaves result */
-        Result getResult(int i);
-
-        std::vector<std::string> slaves_results_; /* Slaves results */
-
-
-    private:
-        std::vector<bool> busy_;    /* Slaves busyness */
-        BlockingQueue<int> result_; /* Slaves results */
+    private: /* Private structs */
+        std::vector<Result*> results_;          /* Slaves results */
+        std::vector<bool> busy_;                /* Slaves busyness */
+        BlockingQueue<TodoItem*> todo_;         /* Slaves todolist */
         int port_;
 
 }; /* -----  end of class Server  ----- */

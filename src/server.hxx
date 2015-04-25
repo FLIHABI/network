@@ -16,59 +16,60 @@
 #include "server.hh"
 #include "broadcaster.hh"
 
-Server::Server(int port)
+
+// PUBLIC METHODS
+
+Server::Server(int port) : results_(), busy_(), todo_()
 {
     port_ = port;
     // Launch the server broadcaster and connection handler
     std::thread broadcaster(broadcastLoop);
+    broadcaster.detach();
     std::thread handler(Server::handler);
+    handler.detach();
 }
 
-
-/* Getter for slaves result (Thread-safe access) */
-
-Result Server::getResult(int i)
+Result *Server::getResult(int i)
 {
-    slave_result_mutex.lock();
-    std::string r = slaves_results_[i];
-    if (r.size() != 0)
-       slaves_results_[i] = "";
-    slave_result_mutex.unlock();
+    Result *r = results_[i];
+    if (r != NULL)
+    {
+        results_[i] = NULL;
+        busy_[i] = false;   /* set busy to false so the emplacement is free*/
+    }
     return r;
 }
 
+
+// PRIVATE METHODS
+
 void Server::setResult(int i, std::string s)
 {
-    slave_result_mutex.lock();
-    slaves_results_[i] = s;
-    slave_result_mutex.unlock();
+    Result *r = new Result();
+    /* TODO: Test if s is persistant */
+    r->value = s;
+    results_[i] = r;
 }
 
-void Server::addSlave(int s)
+int Server::getResultEmplacement()
 {
-    slave_mutex.lock();
-    slaves_.push_back(s);
-    busy_.push_back(false);
-    slave_mutex.unlock();
-}
-
-void Server::removeSlave(int s)
-{
-    slave_mutex.lock();
-    for (size_t i = 0; i < slaves_.size(); ++i)
+    for (size_t i = 0; i < busy_.size(); i++)
     {
-        int socket = slaves_[i];
-        if (socket == s)
+        if (!busy_[i])
         {
-            slaves_.erase(slaves_.begin()+i);
-            busy_.erase(busy_.begin()+i);
+            busy_[i] = true;
+            return i;
         }
     }
-    slave_mutex.unlock();
+    /* Add emplacement */
+    busy_.push_back(false);
+    results_.push_back(NULL);
+    return getResultEmplacement(); /* FIXME: not optimal */
 }
 
 
 /* Server slaves handling */
-void Server::slaveHandler()
+void Server::handler()
 {
+
 }
