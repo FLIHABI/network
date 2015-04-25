@@ -28,6 +28,10 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
+/*
+ * Listen on a port until packet comes.
+ * WARNING: the integet returned is the socketfd used so CLOSE IT AFTER USAGE
+ */
 int listen(int port)
 {
     int sockfd;
@@ -90,7 +94,5 @@ int listen(int port)
     buf[numbytes] = '\0';
     printf("listener: packet contains \"%s\"\n", buf);
 
-    close(sockfd);
-
-    return 0;
+    return sockfd;
 }
