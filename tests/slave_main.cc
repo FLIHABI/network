@@ -12,7 +12,7 @@
  */
 #include <stdlib.h>
 
-#include "../src/listener.cc"
+#include "listener.hh"
 
 int main()
 {
