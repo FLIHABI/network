@@ -21,6 +21,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <iostream>
+#include <string>
 
 #include "slave.hh"
 #include "listener.hh"
@@ -64,6 +66,8 @@ void Slave::connectToServer(std::string ip, int port)
     memset(&hints, 0, sizeof hints);
     hints.ai_family = AF_UNSPEC;
     hints.ai_socktype = SOCK_STREAM;
+
+    std::cout << "Trying to connect to " << ip << " " << port << std::endl;
 
     if ((rv = getaddrinfo(ip.c_str(), std::to_string(port).c_str(), &hints, &servinfo)) != 0)
     {
