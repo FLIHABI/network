@@ -21,8 +21,11 @@ int main()
 {
     Server *s = new Server();
     int ids[NB_TESTS];
+    std::string string = "This is some bytecode";
+    string += '\0';
+    string += "This is something else";
     for (int i = 0; i < NB_TESTS; ++i)
-        ids[i] = s->execBytecode("This is some bytecode");
+        ids[i] = s->execBytecode(string);
     Result *r;
     for (int i = 0; i < NB_TESTS; ++i)
     {
