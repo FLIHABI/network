@@ -68,7 +68,7 @@ class Server
 
     private: /* Private methods */
         static void handler(Server *s);
-        void setResult(int i, std::string s);
+        void setResult(int i, Result *r);
         int getResultEmplacement();
         static void clientThread(Server *s, int sockfd);
 

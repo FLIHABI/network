@@ -19,6 +19,8 @@
 #include "listener.hh"
 #include "network.hh"
 
+// TODO: More free
+
 // PUBLIC METHODS
 
 Server::Server(int port) : results_(), busy_(), todo_()
@@ -27,7 +29,7 @@ Server::Server(int port) : results_(), busy_(), todo_()
     // Launch the server broadcaster and connection handler
     std::thread broadcaster(broadcastLoop);
     broadcaster.detach();
-    std::thread handle(this->handler);
+    std::thread handle(Server::handler, this);
     handle.detach();
 }
 
@@ -54,11 +56,8 @@ int Server::execBytecode(std::string bytecode)
 
 // PRIVATE METHODS
 
-void Server::setResult(int i, std::string s)
+void Server::setResult(int i, Result *r)
 {
-    Result *r = new Result();
-    /* TODO: Test if s is persistant */
-    r->value = s;
     results_[i] = r;
 }
 
@@ -166,7 +165,7 @@ void Server::handler(Server *server)
         printf("Server: received '%s'\n",buf);
         if (std::string(buf) == CONNECTION_MSG)
         {
-            std::thread client(server->clientThread, new_fd);
+            std::thread client(Server::clientThread, server, new_fd);
             client.detach();
         }
     }
@@ -177,10 +176,30 @@ void Server::clientThread(Server *s, int sockfd)
     std::cout << "Client thread: sending Hello!" << std::endl;
     // Sending ACK
     if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
-        perror("Server: failed sending Hello!");
+        perror("Client thread: failed sending Hello!");
     while (true) /* client loop */
     {
         TodoItem *t = NULL;
         while ((t = s->todo_.pop()) == NULL); // Try to get bytecode to exec
+        // Sending Bytecode
+        if (send(sockfd, t->bytecode.c_str(), t->bytecode.size(), 0) == -1)
+        {
+            perror("Client thread: failed sending bytecode");
+            s->todo_.push(t);
+        }
+        int nbytes;
+        char buf[MAX_BYTECODE_LEN];
+        // Receiving connection msg
+        if ((nbytes = recv(sockfd, buf, MAX_BYTECODE_LEN-1, 0)) == -1)
+        {
+            perror("Client thread: failed receiving bytecode");
+            s->todo_.push(t);
+        }
+        buf[nbytes] = '\0';
+        // Setting result
+        /* TODO: Test if r is persistant */
+        Result *r = new Result();
+        r->value = std::string(buf, nbytes);
+        s->setResult(t->id, r);
     }
 }
