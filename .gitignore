@@ -34,4 +34,4 @@
 # Special dirs
 _bin
 nanomsg-0.5-beta
-*.py*
+*.pyc
