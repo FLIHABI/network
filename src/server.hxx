@@ -148,7 +148,7 @@ void Server::handler()
         int numbytes;
         char buf[100];
         // Receiving connection msg
-        if ((numbytes = recv(sockfd, buf, 100-1, 0)) == -1)
+        if ((numbytes = recv(new_fd, buf, 100-1, 0)) == -1)
         {
             perror("Server: failed to recv the connection msg");
             exit(1);
