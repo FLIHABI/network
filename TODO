@@ -1,0 +1,4 @@
+TODO-FIXME LIST:
+./src/server.hxx:22:// TODO: More free
+./src/server.hxx:200:        /* TODO: Test if r is persistant */
+./src/server.hxx:77:    return getResultEmplacement(); /* FIXME: not optimal */
