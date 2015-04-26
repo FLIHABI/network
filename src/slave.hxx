@@ -99,15 +99,17 @@ void Slave::connectToServer(std::string ip, int port)
 
     freeaddrinfo(servinfo); // all done with this structure
 
-    // FIXME: send CONNECTION_MSG and receive CONNECTION_MSG
-    if ((numbytes = recv(sockfd, buf, 100-1, 0)) == -1) {
-        perror("recv");
+    printf("Slave: connecting to %s\n", s);
+    if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
+        perror("Slave: sending Hello!");
+    printf("Slave: connecting to %s\n", s);
+    if ((numbytes = recv(sockfd, buf, 100-1, 0)) == -1)
+    {
+        perror("Slave: failed to recv the connection msg");
         exit(1);
     }
-
     buf[numbytes] = '\0';
+    printf("Slave: received '%s'\n",buf);
 
-    printf("client: received '%s'\n",buf);
-    
-
+    sockfd_ = sockfd;
 }
