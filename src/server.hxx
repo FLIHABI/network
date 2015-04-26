@@ -123,6 +123,12 @@ void Server::handler()
 
     freeaddrinfo(servinfo); // all done with this structure
 
+    if (listen(sockfd, 10) == -1)
+    {
+        perror("listen");
+        exit(1);
+    }
+
     printf("Handler: waiting for connections...\n");
 
     while (true) /* I love stuff like this */
@@ -130,6 +136,7 @@ void Server::handler()
         sin_size = sizeof their_addr;
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
         if (new_fd == -1) {
+            perror("Handler: accept");
             continue;
         }
 
