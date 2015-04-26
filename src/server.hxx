@@ -145,13 +145,29 @@ void Server::handler()
             s, sizeof s);
         printf("Handler: got connection from %s\n", s);
 
-        std::thread client(clientThread, new_fd);
+        int numbytes;
+        char buf[100];
+        // Receiving connection msg
+        if ((numbytes = recv(sockfd, buf, 100-1, 0)) == -1)
+        {
+            perror("Server: failed to recv the connection msg");
+            exit(1);
+        }
+        buf[numbytes] = '\0';
+        printf("Server: received '%s'\n",buf);
+        if (std::string(buf) == CONNECTION_MSG)
+        {
+            std::thread client(clientThread, new_fd);
+            client.detach();
+        }
     }
 }
 
-void Server::clientThread(int s)
+void Server::clientThread(int sockfd)
 {
-    std::cout << "Client thread: Hello!" << std::endl;
-    if (s)
-        return;
+    std::cout << "Client thread: sending Hello!" << std::endl;
+    // Sending ACK
+    if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
+        perror("Server: failed sending Hello!");
+    // Receiving ACK
 }
