@@ -11,6 +11,7 @@
  * ============================================================================
  */
 #include <stdlib.h>
+#include <string>
 
 #include "listener.hh"
 #include "slave.hh"
@@ -18,5 +19,7 @@
 int main()
 {
     Slave *s = new Slave();
+    std::string b = s->getBytecode();
+    std::cout << "Bytecode: " << b << std::endl;
     return s != NULL;
 }
