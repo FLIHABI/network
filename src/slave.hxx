@@ -37,7 +37,18 @@ Slave::Slave()
 
 std::string Slave::getBytecode()
 {
-    return "";
+    int nbRecv;
+    char buf[MAX_BYTECODE_LEN];
+    std::cout << "Slave: Waiting for bytecode..." << std::endl;
+    if ((nbRecv = recv(sockfd_, buf, MAX_BYTECODE_LEN-1, 0)) == -1)
+    {
+        perror("Slave: failed to recv bytecode");
+        exit(1);
+    }
+    buf[nbRecv] = '\0';
+    std::cout << "Slave: received: " << std::string(buf) << std::endl;
+
+    return std::string(buf);
 }
 
 
@@ -103,10 +114,10 @@ void Slave::connectToServer(std::string ip, int port)
 
     freeaddrinfo(servinfo); // all done with this structure
 
-    printf("Slave: connecting to %s\n", s);
+    // Sending msg to initiate dialog
     if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
         perror("Slave: sending Hello!");
-    printf("Slave: connecting to %s\n", s);
+    // Receiving ACK
     if ((numbytes = recv(sockfd, buf, 100-1, 0)) == -1)
     {
         perror("Slave: failed to recv the connection msg");
@@ -114,6 +125,8 @@ void Slave::connectToServer(std::string ip, int port)
     }
     buf[numbytes] = '\0';
     printf("Slave: received '%s'\n",buf);
+    if (std::string(buf) == CONNECTION_MSG)
+        printf("Slave: ACK");
 
     sockfd_ = sockfd;
 }
