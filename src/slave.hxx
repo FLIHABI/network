@@ -67,21 +67,21 @@ void Slave::connectToServer(std::string ip, int port)
 
     if ((rv = getaddrinfo(ip.c_str(), std::to_string(port).c_str(), &hints, &servinfo)) != 0)
     {
-        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        return 1;
+        fprintf(stderr, "Slave: getaddrinfo: %s\n", gai_strerror(rv));
+        return;
     }
 
     // loop through all the results and connect to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
         if ((sockfd = socket(p->ai_family, p->ai_socktype,
                 p->ai_protocol)) == -1) {
-            perror("client: socket");
+            perror("Slave: failed to get socket");
             continue;
         }
 
         if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
             close(sockfd);
-            perror("client: connect");
+            perror("Slave: failed to connect");
             continue;
         }
 
@@ -90,16 +90,17 @@ void Slave::connectToServer(std::string ip, int port)
 
     if (p == NULL) {
         fprintf(stderr, "client: failed to connect\n");
-        return 2;
+        return;
     }
 
     inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
             s, sizeof s);
-    printf("client: connecting to %s\n", s);
+    printf("Slave: connecting to %s\n", s);
 
     freeaddrinfo(servinfo); // all done with this structure
 
-    if ((numbytes = recv(sockfd, buf, MAXDATASIZE-1, 0)) == -1) {
+    // FIXME: send CONNECTION_MSG and receive CONNECTION_MSG
+    if ((numbytes = recv(sockfd, buf, 100-1, 0)) == -1) {
         perror("recv");
         exit(1);
     }
@@ -107,8 +108,6 @@ void Slave::connectToServer(std::string ip, int port)
     buf[numbytes] = '\0';
 
     printf("client: received '%s'\n",buf);
+    
 
-    close(sockfd);
-
-    return 0;
 }
