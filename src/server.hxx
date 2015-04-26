@@ -15,7 +15,8 @@
 
 #include "server.hh"
 #include "broadcaster.hh"
-
+#include "listener.hh"
+#include "network.hh"
 
 // PUBLIC METHODS
 
@@ -71,5 +72,16 @@ int Server::getResultEmplacement()
 /* Server slaves handling */
 void Server::handler()
 {
+    while (true) /* I love stuff like this */
+    {
+        Socket *s = listen(BROADCAST_PORT);
+        if (s->msg == CONNECTION_MSG)
+            std::thread client(clientThread, s);
+    }
+}
 
+void Server::clientThread(Socket *s)
+{
+    if (s)
+        return;
 }

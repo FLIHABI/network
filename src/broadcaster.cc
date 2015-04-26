@@ -14,6 +14,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
+#include "network.hh"
 #include "broadcaster.hh"
 
 int broadcastLoop()

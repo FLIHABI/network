@@ -15,11 +15,20 @@
 #ifndef  LISTENER_INC
 #define  LISTENER_INC
 
+#include <string>
+
+struct Socket
+{
+    int sockfd;
+    std::string msg;
+    std::string ip;
+};
+
 /*
  * Listen on a port until packet comes.
  * WARNING: the integet returned is the socketfd used so CLOSE IT AFTER USAGE
  */
-int listen(int port);
+Socket *listen(int port);
 
 #include "listener.cc"
 
