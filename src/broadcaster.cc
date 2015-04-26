@@ -37,19 +37,19 @@ int broadcast(const char *ip, const char *msg, int port)
     //char broadcast = '1'; // if that doesn't work, try this
 
     if ((he=gethostbyname(ip)) == NULL) {  // get the host info
-        perror("Boradcster: gethostbyname");
+        perror("Broadcaster: gethostbyname");
         exit(1);
     }
 
     if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) == -1) {
-        perror("Boradcster: socket");
+        perror("Broadcaster: socket");
         exit(1);
     }
 
     // this call is what allows broadcast packets to be sent:
     if (setsockopt(sockfd, SOL_SOCKET, SO_BROADCAST, &broadcast,
         sizeof broadcast) == -1) {
-        perror("Boradcster: setsockopt (SO_BROADCAST)");
+        perror("Broadcaster: setsockopt (SO_BROADCAST)");
         exit(1);
     }
 
