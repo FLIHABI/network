@@ -43,7 +43,7 @@ std::string Slave::getBytecode()
     if ((nbRecv = recv(sockfd_, buf, MAX_BYTECODE_LEN-1, 0)) == -1)
     {
         perror("Slave: failed to recv bytecode");
-        exit(1);
+        return "";
     }
     buf[nbRecv] = '\0';
     std::cout << "Slave: received: " << std::string(buf) << std::endl;
@@ -52,9 +52,14 @@ std::string Slave::getBytecode()
 }
 
 
-void Slave::send_bytecode(std::string bytecode)
+int Slave::send_bytecode(std::string bytecode)
 {
-    bytecode = "";
+    if (send(sockfd_, bytecode.c_str(), bytecode.size(), 0) == -1)
+    {
+        perror("Client thread: failed sending bytecode");
+        return -1;
+    }
+    return 0;
 }
 
 // PRIVATE METHODS
@@ -89,7 +94,7 @@ void Slave::connectToServer(std::string ip, int port)
     // loop through all the results and connect to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
         if ((sockfd = socket(p->ai_family, p->ai_socktype,
-                p->ai_protocol)) == -1) {
+                        p->ai_protocol)) == -1) {
             perror("Slave: failed to get socket");
             continue;
         }

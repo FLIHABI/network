@@ -35,13 +35,14 @@ class Slave
         /* ====================  OPERATORS  ================================ */
         /*
          * Wait for the bytecode to be sent by the server.
-         * Return: the bytecode string.
+         * Return: the bytecode string or NULL if failed.
          */
         std::string getBytecode();
         /*
          * Send the bytecode result to the server.
+         * Return: 0 for success, -1 for failure
          */
-        void send_bytecode(std::string);
+        int send_bytecode(std::string);
 
     private: // Private methods
         std::string getServerAddress();
