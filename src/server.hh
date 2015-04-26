@@ -46,7 +46,7 @@ class Server
          * CTor for the server.
          * Launch the broadcaster and the slave handler.
          */
-        Server(int port);
+        Server();
 
         /*
          * Descritption: execBytecode ask the server to execute a bytecode
@@ -76,7 +76,6 @@ class Server
         std::vector<Result*> results_;          /* Slaves results */
         std::vector<bool> busy_;                /* Slaves busyness */
         BlockingQueue<TodoItem*> todo_;         /* Slaves todolist */
-        int port_;
 
 }; /* -----  end of class Server  ----- */
 

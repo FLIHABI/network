@@ -23,9 +23,8 @@
 
 // PUBLIC METHODS
 
-Server::Server(int port) : results_(), busy_(), todo_()
+Server::Server() : results_(), busy_(), todo_()
 {
-    port_ = port;
     // Launch the server broadcaster and connection handler
     std::thread broadcaster(broadcastLoop);
     broadcaster.detach();
