@@ -21,5 +21,6 @@ int main()
     Slave *s = new Slave();
     std::string b = s->getBytecode();
     std::cout << "Bytecode: " << b << std::endl;
+    s->send_bytecode("This is some result");
     return s != NULL;
 }

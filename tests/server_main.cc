@@ -17,6 +17,10 @@
 
 int main()
 {
-    Server s(4545);
+    Server *s = new Server();
+    int id = s->execBytecode("This is some bytecode");
+    Result *r;
+    while ((r = s->getResult(id)) == NULL);
+    std::cout << "Server received: " << r->value << std::endl;
     sleep(20);
 }
