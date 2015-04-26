@@ -30,3 +30,8 @@
 *.exe
 *.out
 *.app
+
+# Special dirs
+_bin
+nanomsg-0.5-beta
+*.py*
