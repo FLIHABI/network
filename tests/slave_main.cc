@@ -13,8 +13,10 @@
 #include <stdlib.h>
 
 #include "listener.hh"
+#include "slave.hh"
 
 int main()
 {
-    listen(4545);
+    Slave *s = new Slave();
+    return s != NULL;
 }

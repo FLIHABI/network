@@ -130,7 +130,6 @@ void Server::handler()
         sin_size = sizeof their_addr;
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
         if (new_fd == -1) {
-            perror("Handler: accept");
             continue;
         }
 
