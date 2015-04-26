@@ -186,6 +186,7 @@ void Server::clientThread(Server *s, int sockfd)
         {
             perror("Client thread: failed sending bytecode");
             s->todo_.push(t);
+            break;
         }
         int nbytes;
         char buf[MAX_BYTECODE_LEN];
@@ -202,4 +203,5 @@ void Server::clientThread(Server *s, int sockfd)
         r->value = std::string(buf, nbytes);
         s->setResult(t->id, r);
     }
+    close(sockfd);
 }
