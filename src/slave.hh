@@ -45,7 +45,7 @@ class Slave
 
     private: // Private methods
         std::string getServerAddress();
-        void connetToServer();
+        void connectToServer(std::string ip, int port);
 
     private: // Private attributes
         int sockfd_;
