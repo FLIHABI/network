@@ -126,7 +126,7 @@ void Slave::connectToServer(std::string ip, int port)
     buf[numbytes] = '\0';
     printf("Slave: received '%s'\n",buf);
     if (std::string(buf) == CONNECTION_MSG)
-        printf("Slave: ACK");
+        printf("Slave: ACK received");
 
     sockfd_ = sockfd;
 }
