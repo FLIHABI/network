@@ -12,6 +12,7 @@
  */
 
 #include <thread>
+#include <iostream>
 
 #include "server.hh"
 #include "broadcaster.hh"
@@ -77,6 +78,12 @@ void Server::handler()
         Socket *s = listen(BROADCAST_PORT);
         if (s->msg == CONNECTION_MSG)
             std::thread client(clientThread, s);
+        else
+        {
+            std::cout << "Handler: Discarding packet with message: " << s->msg
+                        << std::endl;
+            close(s->sockfd);
+        }
     }
 }
 
