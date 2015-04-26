@@ -20,5 +20,6 @@
 #define CONNECTION_PORT 4242
 #define CONNECTION_MSG "Flihabi: Connection"
 #define MAX_BYTECODE_LEN 1000
+#define BROADCAST_REFRESH 5 // in seconds
 
 #endif   /* ----- #ifndef NETWORK_INC  ----- */
