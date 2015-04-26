@@ -52,7 +52,7 @@ std::string Slave::getServerAddress()
 {
     Socket *s = listen(BROADCAST_PORT);
     close(s->sockfd);
-    return s->msg;
+    return s->ip;
 }
 
 void Slave::connectToServer(std::string ip, int port)
