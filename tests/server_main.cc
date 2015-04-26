@@ -18,5 +18,5 @@
 int main()
 {
     Server s(4545);
-    sleep(5);
+    sleep(10);
 }
