@@ -26,7 +26,7 @@ struct Socket
 
 /*
  * Listen on a port until packet comes.
- * WARNING: the integet returned is the socketfd used so CLOSE IT AFTER USAGE
+ * WARNING: the integer returned is the socketfd used so CLOSE IT AFTER USAGE
  */
 Socket *listen(int port);
 

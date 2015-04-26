@@ -70,7 +70,7 @@ class Server
         static void handler();
         void setResult(int i, std::string s);
         int getResultEmplacement();
-        static void clientThread(Socket *s);
+        static void clientThread(int s);
 
     private: /* Private structs */
         std::vector<Result*> results_;          /* Slaves results */

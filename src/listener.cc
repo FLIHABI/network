@@ -15,6 +15,7 @@
 #include <string>
 
 #include "broadcaster.hh"
+#include "listener.hh"
 
 #define MAXBUFLEN 100
 
