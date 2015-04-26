@@ -67,10 +67,10 @@ class Server
         Result *getResult(int i);
 
     private: /* Private methods */
-        static void handler();
+        static void handler(Server *s);
         void setResult(int i, std::string s);
         int getResultEmplacement();
-        static void clientThread(int s);
+        static void clientThread(Server *s, int sockfd);
 
     private: /* Private structs */
         std::vector<Result*> results_;          /* Slaves results */
