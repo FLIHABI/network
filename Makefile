@@ -11,10 +11,10 @@ BIN_DIR=_bin
 
 all: server slave
 
-server:
+server: | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -I src/ $(SERVER_TEST) -o $(BIN_DIR)/$@ $(LIBS)
 
-slave:
+slave: | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -I src/ $(SLAVE_TEST) -o $(BIN_DIR)/$@ $(LIBS)
 
 
