@@ -15,7 +15,7 @@
 
 #include "server.hh"
 
-#define NB_TESTS 100
+#define NB_TESTS 10
 
 int main()
 {
@@ -26,7 +26,11 @@ int main()
     Result *r;
     for (int i = 0; i < NB_TESTS; ++i)
     {
-        while ((r = s->getResult(ids[i])) == NULL);
+        while ((r = s->getResult(ids[i])) == NULL)
+        {
+            std::cout << "Server: Waiting for result";
+            sleep(1);
+        }
         std::cout << "Server received: " << r->value << std::endl;
     }
 }
