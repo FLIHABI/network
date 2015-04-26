@@ -19,8 +19,11 @@
 int main()
 {
     Slave *s = new Slave();
-    std::string b = s->getBytecode();
-    std::cout << "Bytecode: " << b << std::endl;
-    s->send_bytecode("This is some result");
-    return s != NULL;
+    while (true)
+    {
+        std::string b = s->getBytecode();
+        std::cout << "Receive bytecode: " << b << std::endl;
+        sleep(3);
+        s->send_bytecode("This is some result");
+    }
 }

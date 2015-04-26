@@ -15,12 +15,18 @@
 
 #include "server.hh"
 
+#define NB_TESTS 100
+
 int main()
 {
     Server *s = new Server();
-    int id = s->execBytecode("This is some bytecode");
+    int ids[NB_TESTS];
+    for (int i = 0; i < NB_TESTS; ++i)
+        ids[i] = s->execBytecode("This is some bytecode");
     Result *r;
-    while ((r = s->getResult(id)) == NULL);
-    std::cout << "Server received: " << r->value << std::endl;
-    sleep(20);
+    for (int i = 0; i < NB_TESTS; ++i)
+    {
+        while ((r = s->getResult(ids[i])) == NULL);
+        std::cout << "Server received: " << r->value << std::endl;
+    }
 }
