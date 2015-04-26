@@ -19,5 +19,6 @@
 #define BROADCAST_MSG "Flihabi: Hello!"
 #define CONNECTION_PORT 4242
 #define CONNECTION_MSG "Flihabi: Connection"
+#define MAX_BYTECODE_LEN 1000
 
 #endif   /* ----- #ifndef NETWORK_INC  ----- */
