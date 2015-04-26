@@ -20,6 +20,7 @@
 #include <mutex>
 
 #include "blocking_queue.hh"
+#include "listener.hh"
 
 struct Result
 {
@@ -69,6 +70,7 @@ class Server
         static void handler();
         void setResult(int i, std::string s);
         int getResultEmplacement();
+        static void clientThread(Socket *s);
 
     private: /* Private structs */
         std::vector<Result*> results_;          /* Slaves results */

@@ -32,7 +32,7 @@ void *get_in_addr(struct sockaddr *sa)
  * Listen on a port until packet comes.
  * WARNING: the integet returned is the socketfd used so CLOSE IT AFTER USAGE
  */
-int listen(int port)
+Socket *listen(int port)
 {
     int sockfd;
     struct addrinfo hints, *servinfo, *p;
@@ -50,7 +50,7 @@ int listen(int port)
 
     if ((rv = getaddrinfo(NULL, std::to_string(port).c_str(), &hints, &servinfo)) != 0) {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        return 1;
+        return NULL;
     }
 
     // loop through all the results and bind to the first we can
@@ -72,7 +72,7 @@ int listen(int port)
 
     if (p == NULL) {
         fprintf(stderr, "listener: failed to bind socket\n");
-        return 2;
+        return NULL;
     }
 
     freeaddrinfo(servinfo);
@@ -94,5 +94,11 @@ int listen(int port)
     buf[numbytes] = '\0';
     printf("listener: packet contains \"%s\"\n", buf);
 
-    return sockfd;
+    Socket *socket = new Socket();
+    socket->ip = inet_ntop(their_addr.ss_family,
+            get_in_addr((struct sockaddr *)&their_addr),
+            s, sizeof s);
+    socket->msg = buf;
+    socket->sockfd = sockfd;
+    return socket;
 }
