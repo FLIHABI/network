@@ -27,8 +27,8 @@ Server::Server(int port) : results_(), busy_(), todo_()
     // Launch the server broadcaster and connection handler
     std::thread broadcaster(broadcastLoop);
     broadcaster.detach();
-    std::thread handler(Server::handler);
-    handler.detach();
+    std::thread handle(this->handler);
+    handle.detach();
 }
 
 Result *Server::getResult(int i)
@@ -42,6 +42,15 @@ Result *Server::getResult(int i)
     return r;
 }
 
+int Server::execBytecode(std::string bytecode)
+{
+    int i = getResultEmplacement();
+    TodoItem *t = new TodoItem();
+    t->id = i;
+    t->bytecode = bytecode;
+    todo_.push(t);
+    return i;
+}
 
 // PRIVATE METHODS
 
@@ -71,7 +80,7 @@ int Server::getResultEmplacement()
 
 
 /* Server slaves handling */
-void Server::handler()
+void Server::handler(Server *server)
 {
     int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
     struct addrinfo hints, *servinfo, *p;
@@ -157,17 +166,21 @@ void Server::handler()
         printf("Server: received '%s'\n",buf);
         if (std::string(buf) == CONNECTION_MSG)
         {
-            std::thread client(clientThread, new_fd);
+            std::thread client(server->clientThread, new_fd);
             client.detach();
         }
     }
 }
 
-void Server::clientThread(int sockfd)
+void Server::clientThread(Server *s, int sockfd)
 {
     std::cout << "Client thread: sending Hello!" << std::endl;
     // Sending ACK
     if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
         perror("Server: failed sending Hello!");
-    // Receiving ACK
+    while (true) /* client loop */
+    {
+        TodoItem *t = NULL;
+        while ((t = s->todo_.pop()) == NULL); // Try to get bytecode to exec
+    }
 }
