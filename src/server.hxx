@@ -196,11 +196,18 @@ void Server::clientThread(Server *s, int sockfd)
             s->todo_.push(t);
         }
         buf[nbytes] = '\0';
+        if (nbytes == 0)
+        {
+            std::cout << "Client thread: Connection seems to be reset."
+                        << std::endl;
+            s->todo_.push(t);
+            close(sockfd);
+            break;
+        }
         // Setting result
         /* TODO: Test if r is persistant */
         Result *r = new Result();
         r->value = std::string(buf, nbytes);
         s->setResult(t->id, r);
     }
-    close(sockfd);
 }
