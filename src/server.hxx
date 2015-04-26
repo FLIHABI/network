@@ -76,6 +76,8 @@ void Server::handler()
     while (true) /* I love stuff like this */
     {
         Socket *s = listen(BROADCAST_PORT);
+        if (!s)
+            continue;
         if (s->msg == CONNECTION_MSG)
             std::thread client(clientThread, s);
         else

@@ -22,7 +22,7 @@ int broadcastLoop()
     while (1)
     {
         broadcast(BROADCAST_ADD, BROADCAST_MSG, BROADCAST_PORT);
-        sleep(1);
+        sleep(5);
     }
     return 0;
 }
