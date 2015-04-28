@@ -73,7 +73,7 @@ int Server::getResultEmplacement()
     /* Add emplacement */
     busy_.push_back(false);
     results_.push_back(NULL);
-    return getResultEmplacement(); /* FIXME: not optimal */
+    return busy_.size() - 1;
 }
 
 
