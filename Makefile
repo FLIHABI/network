@@ -1,13 +1,12 @@
-CXX=clang++
+CXX=g++
 NOWARNFLAGS=-Wno-null-conversion -Wno-null-arithmetic
-CXXFLAGS=-Wall -Wextra -std=c++14 -pedantic $(NOWARNFLAGS)
-STATICFLAGS=-stdlib=libstdc++
+CXXFLAGS=-m32 -Wall -Wextra -std=c++14 -pedantic $(NOWARNFLAGS)
 SERVER_TEST=tests/server_main.cc
 SLAVE_TEST=tests/slave_main.cc
 QUEUE_TEST=tests/queue.cc
 QUEUE_OBJ=$(QUEUE_TEST:.cc=.o)
 
-LIBS=-pthread -lstdc++
+LIBS=-pthread #-lstdc++
 STATICLIBS=-static
 BIN_DIR=_bin
 
@@ -23,10 +22,14 @@ slave: | $(BIN_DIR)
 testqueue: | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) -I src/ $(QUEUE_TEST) -o $(BIN_DIR)/$@ $(LIBS)
 
-static: | $(BIN_DIR)
+static: static-slave
+
+static-server: | $(BIN_DIR)
 	$(CXX) $(CXXFLAGS) $(STATICFLAGS) -I src/ $(SERVER_TEST)\
 	    -o $(BIN_DIR)/$@ $(STATICLIBS) $(LIBS)
-	$(CXX) $(CXXFLAGS) $(STATICFLAGS) -I src/ $(SLAVE_TEST)\
+
+static-slave: | $(BIN_DIR)
+	$(CXX) -m32 $(CXXFLAGS) $(STATICFLAGS) -I src/ $(SLAVE_TEST)\
 	    -o $(BIN_DIR)/$@ $(STATICLIBS) $(LIBS)
 
 $(BIN_DIR):
