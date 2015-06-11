@@ -1,4 +1,4 @@
-#include "task/task.hh"
+#include "task.hh"
 
 task::Task::Task(unsigned task_id, int16_t fun_id, std::vector<int64_t>& params)
   : id(task_id)
