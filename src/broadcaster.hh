@@ -6,6 +6,4 @@
 int broadcastLoop();
 int broadcast(const char *ip, const char *msg, int port);
 
-# include "broadcaster.cc"
-
 #endif

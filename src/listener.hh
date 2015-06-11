@@ -30,6 +30,4 @@ struct Socket
  */
 Socket *listen(int port);
 
-#include "listener.cc"
-
 #endif   /* ----- #ifndef LISTENER_INC  ----- */

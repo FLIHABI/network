@@ -10,8 +10,10 @@
  *   Organization:  Flihabi
  * ============================================================================
  */
+
 #include <stdlib.h>
 #include <unistd.h>
+#include <iostream>
 
 #include "server.hh"
 
@@ -31,7 +33,7 @@ int main()
     {
         while ((r = s->getResult(ids[i])) == NULL)
         {
-            std::cout << "Server: Waiting for result";
+            std::cout << "Server: Waiting for result nb " << i << "\n";
             sleep(1);
         }
         std::cout << "Server received: " << r->value << std::endl;

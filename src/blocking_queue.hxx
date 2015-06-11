@@ -18,7 +18,7 @@ BlockingQueue<T>::BlockingQueue() : q_()
 {}
 
 template <class T>
-void BlockingQueue<T>::push(T e)
+inline void BlockingQueue<T>::push(T e)
 {
     q_lock_.lock();
     q_.push(e);
@@ -26,7 +26,7 @@ void BlockingQueue<T>::push(T e)
 }
 
 template <class T>
-T BlockingQueue<T>::pop()
+inline T BlockingQueue<T>::pop()
 {
     T e;
     q_lock_.lock();

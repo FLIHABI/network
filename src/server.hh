@@ -79,7 +79,5 @@ class Server
 
 }; /* -----  end of class Server  ----- */
 
-# include "server.hxx"
-
 #endif   /* ----- #ifndef SERVER_INC  ----- */
 

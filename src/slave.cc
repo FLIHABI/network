@@ -24,6 +24,8 @@
 #include <iostream>
 #include <string>
 
+#include "utils.hh"
+#include "network.hh"
 #include "slave.hh"
 #include "listener.hh"
 
@@ -123,7 +125,7 @@ void Slave::connectToServer(std::string ip, int port)
     if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
         perror("Slave: sending Hello!");
     // Receiving ACK
-    if ((numbytes = recv(sockfd, buf, 100-1, 0)) == -1)
+    if ((numbytes = recv(sockfd, buf, strlen(CONNECTION_MSG), 0)) == -1)
     {
         perror("Slave: failed to recv the connection msg");
         exit(1);
@@ -132,6 +134,8 @@ void Slave::connectToServer(std::string ip, int port)
     printf("Slave: received '%s'\n",buf);
     if (std::string(buf) == CONNECTION_MSG)
         printf("Slave: ACK received");
+    else
+        exit(1);
 
     sockfd_ = sockfd;
 }

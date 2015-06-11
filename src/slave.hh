@@ -53,6 +53,4 @@ class Slave
 
 }; /* -----  end of class Slave  ----- */
 
-#include "slave.hxx"
-
 #endif   /* ----- #ifndef SLAVE_INC  ----- */

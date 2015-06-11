@@ -11,9 +11,16 @@
  * ============================================================================
  */
 
+#define _POSIX_SOURCE
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <string.h>
 #include <thread>
 #include <iostream>
 
+#include "blocking_queue.hh"
+#include "utils.hh"
 #include "server.hh"
 #include "broadcaster.hh"
 #include "listener.hh"

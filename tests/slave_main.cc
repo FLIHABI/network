@@ -10,8 +10,9 @@
  *   Organization:  Flihabi
  * ============================================================================
  */
-#include <stdlib.h>
+#include <unistd.h>
 #include <string>
+#include <iostream>
 
 #include "listener.hh"
 #include "slave.hh"
