@@ -213,6 +213,7 @@ void Server::clientThread(Server *s, int sockfd)
         }
         // Setting result
         /* TODO: Test if r is persistant */
+        std::cout << "GOT SOMETHING" << std::endl;
         Result *r = new Result();
         r->value = std::string(buf, nbytes);
         s->setResult(t->id, r);

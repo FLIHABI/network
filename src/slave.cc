@@ -48,9 +48,9 @@ std::string Slave::getBytecode()
         return "";
     }
     buf[nbRecv] = '\0';
-    std::cout << "Slave: received " << nbRecv << " bytes: " << std::string(buf) << std::endl;
+    std::cout << "Slave: received " << nbRecv << " bytes: " << std::string(buf, nbRecv) << std::endl;
 
-    return std::string(buf);
+    return std::string(buf, nbRecv);
 }
 
 
