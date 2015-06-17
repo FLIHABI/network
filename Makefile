@@ -1,7 +1,7 @@
 CXX=g++
 #NOWARNFLAGS=-Wno-null-conversion -Wno-null-arithmetic
 CXXFLAGS=-m32 -Wall -Wextra -std=c++14 -pedantic -I include $(NOWARNFLAGS)
-SRC=broadcaster.cc listener.cc server.cc slave.cc utils.cc
+SRC=broadcaster.cc listener.cc server.cc slave.cc utils.cc service.cc
 SERVER_TEST=tests/server_main.cc
 SLAVE_TEST=tests/slave_main.cc
 QUEUE_TEST=tests/queue.cc
