@@ -177,18 +177,33 @@ void Server::handler(Server *server)
     }
 }
 
+ssize_t Server::sendBytecode(int socket, std::string buffer, size_t len)
+{
+    char clen[2];
+    ssize_t size = 0;
+    memcpy(&clen[0], &len, sizeof(int));
+    if (send(socket, clen, sizeof(clen), 0) == -1)
+    {
+        perror("Server send: failed sending bytecode length!");
+        return -1;
+    }
+    if ((size = send(socket, buffer.c_str(), len, 0)) == -1)
+        perror("Server send: failed sending bytecode!");
+    return size;
+}
+
 void Server::clientThread(Server *s, int sockfd)
 {
     std::cout << "Client thread: sending Hello!" << std::endl;
     // Sending ACK
-    if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
+    if (sendBytecode(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG)) == -1)
         perror("Client thread: failed sending Hello!");
     while (true) /* client loop */
     {
         TodoItem *t = NULL;
         while ((t = s->todo_.pop()) == NULL); // Try to get bytecode to exec
         // Sending Bytecode
-        if (send(sockfd, t->bytecode.c_str(), t->bytecode.size(), 0) == -1)
+        if (sendBytecode(sockfd, t->bytecode.c_str(), t->bytecode.size()) == -1)
         {
             perror("Client thread: failed sending bytecode");
             s->todo_.push(t);
