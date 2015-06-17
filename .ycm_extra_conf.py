@@ -40,6 +40,7 @@ flags = [
 '-std=c++14',
 '-I',
 'include',
+'-pthread'
 ]
 compilation_database_folder = ''
 
