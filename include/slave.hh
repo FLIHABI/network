@@ -45,6 +45,7 @@ class Slave
         int send_bytecode(std::string);
 
     private: // Private methods
+        ssize_t sendBytecode(int socket, std::string buffer, size_t len);
         std::string getServerAddress();
         void connectToServer(std::string ip, int port);
 

@@ -56,7 +56,7 @@ std::string Slave::getBytecode()
 
 int Slave::send_bytecode(std::string bytecode)
 {
-    if (send(sockfd_, bytecode.c_str(), bytecode.size(), 0) == -1)
+    if (sendBytecode(sockfd_, bytecode.c_str(), bytecode.size()) == -1)
     {
         perror("Client thread: failed sending bytecode");
         return -1;
@@ -65,6 +65,21 @@ int Slave::send_bytecode(std::string bytecode)
 }
 
 // PRIVATE METHODS
+
+ssize_t Slave::sendBytecode(int socket, std::string buffer, size_t len)
+{
+    char clen[2];
+    ssize_t size = 0;
+    memcpy(&clen[0], &len, sizeof(int));
+    if (send(socket, clen, sizeof(clen), 0) == -1)
+    {
+        perror("Server send: failed sending bytecode length!");
+        return -1;
+    }
+    if ((size = send(socket, buffer.c_str(), len, 0)) == -1)
+        perror("Server send: failed sending bytecode!");
+    return size;
+}
 
 std::string Slave::getServerAddress()
 {
