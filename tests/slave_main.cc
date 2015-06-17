@@ -23,7 +23,6 @@ int main()
     while (true)
     {
         std::string b = s->getBytecode();
-        std::cout << "Receive bytecode: " << b << std::endl;
         sleep(3);
         std::cout << "Sending result"  << std::endl;
         s->send_bytecode("This is some result");

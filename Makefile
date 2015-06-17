@@ -12,29 +12,30 @@ BIN_DIR=_bin
 BUILD_DIR=_build
 OBJ=$(SRC:.cc=.o)
 OBJ_FILES=$(addprefix $(BUILD_DIR)/, $(OBJ))
+INCLUDE_DIR=include
 
 all: $(BIN_DIR) $(BUILD_DIR) server slave
 
 server: $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -I src/ $^ $(SERVER_TEST) -o $(BIN_DIR)/$@ $(LIBS)
+	$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) $^ $(SERVER_TEST) -o $(BIN_DIR)/$@ $(LIBS)
 
 slave: $(OBJ_FILES)
-	$(CXX) $(CXXFLAGS) -I src/ $^ $(SLAVE_TEST) -o $(BIN_DIR)/$@ $(LIBS)
+	$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) $^ $(SLAVE_TEST) -o $(BIN_DIR)/$@ $(LIBS)
 
 _build/%.o: src/%.cc
-	$(CXX) $(CXXFLAGS) -I src/ -c $^ -o $@
+	$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) -c $^ -o $@
 
 testqueue: | $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) -I src/ $(QUEUE_TEST) -o $(BIN_DIR)/$@ $(LIBS)
+	$(CXX) $(CXXFLAGS) -I $(INCLUDE_DIR) $(QUEUE_TEST) -o $(BIN_DIR)/$@ $(LIBS)
 
 static: static-slave
 
 static-server: | $(BIN_DIR)
-	$(CXX) $(CXXFLAGS) $(STATICFLAGS) -I src/ $(SERVER_TEST)\
+	$(CXX) $(CXXFLAGS) $(STATICFLAGS) -I $(INCLUDE_DIR) $(SERVER_TEST)\
 	    -o $(BIN_DIR)/$@ $(STATICLIBS) $(LIBS)
 
 static-slave: | $(BIN_DIR)
-	$(CXX) -m32 $(CXXFLAGS) $(STATICFLAGS) -I src/ $(SLAVE_TEST)\
+	$(CXX) -m32 $(CXXFLAGS) $(STATICFLAGS) -I $(INCLUDE_DIR) $(SLAVE_TEST)\
 	    -o $(BIN_DIR)/$@ $(STATICLIBS) $(LIBS)
 
 $(BIN_DIR):

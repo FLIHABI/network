@@ -36,6 +36,7 @@ int main()
             std::cout << "Server: Waiting for result nb " << i << "\n";
             sleep(1);
         }
-        std::cout << "Server received: " << r->value << std::endl;
+        std::cout << "Server received " << r->value.length() << "bytes: "
+                    << r->value << std::endl;
     }
 }

@@ -41,6 +41,22 @@ flags = [
 '-I',
 'include',
 '-pthread'
+'.',
+'./ClangCompleter',
+'-isystem',
+'./tests/gmock/gtest',
+'-isystem',
+'./tests/gmock/gtest/include',
+'-isystem',
+'./tests/gmock',
+'-isystem',
+'./tests/gmock/include',
+## Include paths:
+'-I',
+'include/',
+## Libs:
+'-lnanomsg',
+'-lboost'
 ]
 compilation_database_folder = ''
 

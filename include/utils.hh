@@ -25,7 +25,16 @@
 #include <netdb.h>
 #include <string>
 
-// get sockaddr, IPv4 or IPv6:
-void *get_in_addr(struct sockaddr *sa);
+class Utils
+{
+    public:
+    // get sockaddr, IPv4 or IPv6:
+    static void *get_in_addr(struct sockaddr *sa);
+
+    // Network protocoled functions
+
+    static unsigned int recvBytecodeLen(int socket);
+    static ssize_t sendBytecode(int socket, std::string buffer, unsigned int len);
+};
 
 #endif   /* !UTILS_HH */

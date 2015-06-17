@@ -40,23 +40,36 @@ Slave::Slave()
 std::string Slave::getBytecode()
 {
     int nbRecv;
-    char buf[MAX_BYTECODE_LEN];
-    std::cout << "Slave: Waiting for bytecode..." << std::endl;
-    if ((nbRecv = recv(sockfd_, buf, MAX_BYTECODE_LEN-1, 0)) == -1)
+    int len;
+    if ((len = Utils::recvBytecodeLen(sockfd_)) == -1)
+    {
+        perror("Slave: failed to recv bytecode len");
+        return "";
+    }
+    char *buf = (char*) malloc(len);
+    memset(buf, 0, len);
+    std::cout << "Slave: Waiting for " << len << " bytes" << std::endl;
+    if ((nbRecv = recv(sockfd_, buf, len, 0)) == -1)
     {
         perror("Slave: failed to recv bytecode");
         return "";
     }
-    buf[nbRecv] = '\0';
-    std::cout << "Slave: received " << nbRecv << " bytes: " << std::string(buf, nbRecv) << std::endl;
+    printf("Slave: received %u bytes:\n", nbRecv);
+    for (int i = 0; i < len; i++)
+    {
+        if (buf[i] <= '~' && buf[i] >= ' ')
+            printf("%c", buf[i]);
+        else
+            printf("\\%02X", buf[i]);
+    }
+    printf("\n");
 
     return std::string(buf, nbRecv);
 }
 
-
 int Slave::send_bytecode(std::string bytecode)
 {
-    if (sendBytecode(sockfd_, bytecode.c_str(), bytecode.size()) == -1)
+    if (Utils::sendBytecode(sockfd_, bytecode.c_str(), bytecode.size()) == -1)
     {
         perror("Client thread: failed sending bytecode");
         return -1;
@@ -65,21 +78,6 @@ int Slave::send_bytecode(std::string bytecode)
 }
 
 // PRIVATE METHODS
-
-ssize_t Slave::sendBytecode(int socket, std::string buffer, size_t len)
-{
-    char clen[2];
-    ssize_t size = 0;
-    memcpy(&clen[0], &len, sizeof(int));
-    if (send(socket, clen, sizeof(clen), 0) == -1)
-    {
-        perror("Server send: failed sending bytecode length!");
-        return -1;
-    }
-    if ((size = send(socket, buffer.c_str(), len, 0)) == -1)
-        perror("Server send: failed sending bytecode!");
-    return size;
-}
 
 std::string Slave::getServerAddress()
 {
@@ -130,7 +128,7 @@ void Slave::connectToServer(std::string ip, int port)
         return;
     }
 
-    inet_ntop(p->ai_family, get_in_addr((struct sockaddr *)p->ai_addr),
+    inet_ntop(p->ai_family, Utils::get_in_addr((struct sockaddr *)p->ai_addr),
             s, sizeof s);
     printf("Slave: connecting to %s\n", s);
 
@@ -148,7 +146,7 @@ void Slave::connectToServer(std::string ip, int port)
     buf[numbytes] = '\0';
     printf("Slave: received '%s'\n",buf);
     if (std::string(buf) == CONNECTION_MSG)
-        printf("Slave: ACK received");
+        printf("Slave: ACK received\n");
     else
         exit(1);
 

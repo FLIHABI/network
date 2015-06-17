@@ -71,7 +71,6 @@ class Server
         void setResult(int i, Result *r);
         int getResultEmplacement();
         static void clientThread(Server *s, int sockfd);
-        static ssize_t sendBytecode(int socket, std::string buffer, size_t len);
 
     private: /* Private structs */
         std::vector<Result*> results_;          /* Slaves results */

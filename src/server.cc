@@ -101,7 +101,7 @@ void Server::handler(Server *server)
     hints.ai_flags = AI_PASSIVE; // use my IP
 
     if ((rv = getaddrinfo(NULL, std::to_string(CONNECTION_PORT).c_str(),
-                                &hints, &servinfo)) != 0)
+                    &hints, &servinfo)) != 0)
     {
         fprintf(stderr, "Handler: getaddrinfo: %s\n", gai_strerror(rv));
         return;
@@ -110,13 +110,13 @@ void Server::handler(Server *server)
     // loop through all the results and bind to the first we can
     for(p = servinfo; p != NULL; p = p->ai_next) {
         if ((sockfd = socket(p->ai_family, p->ai_socktype,
-                p->ai_protocol)) == -1) {
+                        p->ai_protocol)) == -1) {
             perror("Handler: socket");
             continue;
         }
 
         if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes,
-                sizeof(int)) == -1) {
+                    sizeof(int)) == -1) {
             perror("Handler: setsockopt");
             exit(1);
         }
@@ -155,8 +155,8 @@ void Server::handler(Server *server)
         }
 
         inet_ntop(their_addr.ss_family,
-            get_in_addr((struct sockaddr *)&their_addr),
-            s, sizeof s);
+                Utils::get_in_addr((struct sockaddr *)&their_addr),
+                s, sizeof s);
         printf("Handler: got connection from %s\n", s);
 
         int numbytes;
@@ -177,58 +177,60 @@ void Server::handler(Server *server)
     }
 }
 
-ssize_t Server::sendBytecode(int socket, std::string buffer, size_t len)
-{
-    char clen[2];
-    ssize_t size = 0;
-    memcpy(&clen[0], &len, sizeof(int));
-    if (send(socket, clen, sizeof(clen), 0) == -1)
-    {
-        perror("Server send: failed sending bytecode length!");
-        return -1;
-    }
-    if ((size = send(socket, buffer.c_str(), len, 0)) == -1)
-        perror("Server send: failed sending bytecode!");
-    return size;
-}
-
 void Server::clientThread(Server *s, int sockfd)
 {
     std::cout << "Client thread: sending Hello!" << std::endl;
     // Sending ACK
-    if (sendBytecode(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG)) == -1)
+    if (send(sockfd, CONNECTION_MSG, strlen(CONNECTION_MSG), 0) == -1)
         perror("Client thread: failed sending Hello!");
     while (true) /* client loop */
     {
         TodoItem *t = NULL;
         while ((t = s->todo_.pop()) == NULL); // Try to get bytecode to exec
+
+        std::cout << "Server thread opening task:\n";
+        const char *buffer = t->bytecode.c_str();
+        for (unsigned i = 0; i < t->bytecode.size(); i++)
+        {
+            if (buffer[i] <= '~' && buffer[i] >= ' ')
+                printf("%c", buffer[i]);
+            else
+                printf("\\%02X", buffer[i]);
+        }
+        std::cout << "\n==\n";
         // Sending Bytecode
-        if (sendBytecode(sockfd, t->bytecode.c_str(), t->bytecode.size()) == -1)
+        if (Utils::sendBytecode(sockfd, t->bytecode, t->bytecode.size()) == -1)
         {
             perror("Client thread: failed sending bytecode");
             s->todo_.push(t);
             break;
         }
         int nbytes;
-        char buf[MAX_BYTECODE_LEN];
+        int len;
+        if ((len = Utils::recvBytecodeLen(sockfd)) == -1)
+        {
+            perror("Client thread: fail to get bytecode len");
+            s->todo_.push(t);
+            break;
+        }
+        char *buf = (char*) malloc(len);
         // Receiving connection msg
-        if ((nbytes = recv(sockfd, buf, MAX_BYTECODE_LEN-1, 0)) == -1)
+        if ((nbytes = recv(sockfd, buf, len, 0)) == -1)
         {
             perror("Client thread: failed receiving bytecode");
             s->todo_.push(t);
         }
-        buf[nbytes] = '\0';
         if (nbytes == 0)
         {
             std::cout << "Client thread: Connection seems to be reset."
-                        << std::endl;
+                << std::endl;
             s->todo_.push(t);
             close(sockfd);
             break;
         }
         // Setting result
         /* TODO: Test if r is persistant */
-        std::cout << "GOT SOMETHING" << std::endl;
+        std::cout << "Server got returned bytecode\n";
         Result *r = new Result();
         r->value = std::string(buf, nbytes);
         s->setResult(t->id, r);

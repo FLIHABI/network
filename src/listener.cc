@@ -69,7 +69,7 @@ Socket *listen(int port)
 
     printf("listener: got packet from %s\n",
         inet_ntop(their_addr.ss_family,
-            get_in_addr((struct sockaddr *)&their_addr),
+            Utils::get_in_addr((struct sockaddr *)&their_addr),
             s, sizeof s));
     printf("listener: packet is %d bytes long\n", numbytes);
     buf[numbytes] = '\0';
@@ -77,7 +77,7 @@ Socket *listen(int port)
 
     Socket *socket = new Socket();
     socket->ip = inet_ntop(their_addr.ss_family,
-            get_in_addr((struct sockaddr *)&their_addr),
+            Utils::get_in_addr((struct sockaddr *)&their_addr),
             s, sizeof s);
     socket->msg = buf;
     socket->sockfd = sockfd;
