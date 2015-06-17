@@ -6,6 +6,7 @@ Service::Service(network::NetworkMode mode)
   : mode_(mode)
   , ready_(false)
   , alive_(false)
+  , task_id_counter_(0)
 {}
 
 void Service::start()
