@@ -1,3 +1,5 @@
+#include "slave.hh"
+#include "server.hh"
 #include "service.hh"
 
 using namespace network;
@@ -88,28 +90,38 @@ void Service::run()
 void Service::client_thread()
 {
   /* init client here */
+  Slave *s = new Slave();
 
   ready();
 
   while (alive_.load(std::memory_order_acquire))
   {
-    //TODO: client part
+    std::string bytecode = s->getBytecode();
+    // TODO: Call vm
+    s->send_bytecode(bytecode);
   }
 
+  delete s;
   /* client client here */
 }
 
 void Service::server_thread()
 {
   /* init server here */
+  Server *s = new Server();
 
   ready();
 
   while (alive_.load(std::memory_order_acquire))
   {
-    //TODO: server part
+    // TODO: get bytecode to execute
+    std::string bytecode;
+    int index = s->execBytecode(bytecode);
+    Result *res = s->getResult(index);
+    //TODO: retrieve result to vm
   }
 
+  delete s;
   /* clean server here */
 }
 
