@@ -19,28 +19,6 @@ namespace network
       void start();
       void stop();
 
-    private:
-      std::thread svc_th_;
-      network::NetworkMode mode_;
-      std::atomic<bool> ready_;
-      std::atomic<bool> alive_;
-      unsigned task_id_counter_;
-      std::unordered_map<unsigned, task::Task> tasks_;
-
-      void run();
-      void client_thread();
-      void server_thread();
-
-      inline void require_stop()
-      {
-        alive_.store(false, std::memory_order_release);
-      }
-
-      inline void ready()
-      {
-        ready_.store(true, std::memory_order_release);
-      }
-
       //TODO: take a ref to Ressource Manager ?
       inline unsigned add_task(int16_t fun_id, std::vector<int64_t>& params)
       {
@@ -87,8 +65,27 @@ namespace network
         //return iter->second;
       }
 
+    private:
+      std::thread svc_th_;
+      network::NetworkMode mode_;
+      std::atomic<bool> ready_;
+      std::atomic<bool> alive_;
+      unsigned task_id_counter_;
+      std::unordered_map<unsigned, task::Task> tasks_;
 
+      void run();
+      void client_thread();
+      void server_thread();
 
+      inline void require_stop()
+      {
+        alive_.store(false, std::memory_order_release);
+      }
+
+      inline void ready()
+      {
+        ready_.store(true, std::memory_order_release);
+      }
   };
 }
 
