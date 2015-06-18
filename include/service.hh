@@ -22,6 +22,11 @@ namespace network
       unsigned add_task(int16_t fun_id, std::vector<int64_t>& params);
       task::Task& get_task_result(unsigned id);
 
+      inline NetworkMode get_mode()
+      {
+        return mode_;
+      }
+
     private:
       std::thread svc_th_;
       network::NetworkMode mode_;
