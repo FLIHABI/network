@@ -3,6 +3,7 @@
 
 # include <thread>
 # include <atomic>
+# include <mutex>
 # include <unordered_map>
 
 # include "task.hh"
