@@ -74,7 +74,6 @@ task::Task& Service::get_task_result(unsigned id)
 
 void Service::run()
 {
-  ready();
   switch (mode_)
   {
     case SERVER:
@@ -89,6 +88,8 @@ void Service::run()
 
 void Service::client_thread()
 {
+  ready();
+
   while (alive_.load(std::memory_order_acquire))
   {
     //TODO: client part
@@ -97,6 +98,8 @@ void Service::client_thread()
 
 void Service::server_thread()
 {
+  ready();
+
   while (alive_.load(std::memory_order_acquire))
   {
     //TODO: server part
