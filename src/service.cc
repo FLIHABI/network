@@ -26,6 +26,7 @@ void Service::stop()
 }
 
 //TODO: take a ref to Ressource Manager ?
+//TODO: mutex on the task map
 unsigned Service::add_task(int16_t fun_id, std::vector<int64_t>& params)
 {
   tasks_.insert(
@@ -43,6 +44,7 @@ unsigned Service::add_task(int16_t fun_id, std::vector<int64_t>& params)
 }
 
 //TODO: take a ref to Ressource Manager ?
+//TODO: mutex on the task map
 task::Task& Service::get_task_result(unsigned id)
 {
   auto iter = tasks_.find(id);
@@ -88,22 +90,30 @@ void Service::run()
 
 void Service::client_thread()
 {
+  /* init client here */
+
   ready();
 
   while (alive_.load(std::memory_order_acquire))
   {
     //TODO: client part
   }
+
+  /* client client here */
 }
 
 void Service::server_thread()
 {
+  /* init server here */
+
   ready();
 
   while (alive_.load(std::memory_order_acquire))
   {
     //TODO: server part
   }
+
+  /* clean server here */
 }
 
 Service::~Service()
