@@ -28,11 +28,11 @@ void Service::stop()
 }
 
 //TODO: take a ref to Ressource Manager ?
-unsigned Service::add_task(int16_t fun_id, std::vector<int64_t>& params)
+unsigned Service::add_task(std::vector<uint64_t>& params)
 {
   tasks_.insert(
       std::make_pair( task_id_counter_,
-        task::Task(task_id_counter_, fun_id, params)));
+        task::Task(task_id_counter_, params)));
 
   //task::Task& task = tasks_.at(task_id_counter_); //TODO: network
   //TODO: pass these datas to the network thread

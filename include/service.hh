@@ -20,7 +20,7 @@ namespace network
       void start();
       void stop();
 
-      unsigned add_task(int16_t fun_id, std::vector<int64_t>& params);
+      unsigned add_task(std::vector<uint64_t>& params);
       task::Task& get_task_result(unsigned id);
 
       inline NetworkMode get_mode()
