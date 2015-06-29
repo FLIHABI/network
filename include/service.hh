@@ -7,6 +7,8 @@
 # include <unordered_map>
 
 # include "task.hh"
+# include "slave.hh"
+# include "server.hh"
 # include "network_mode.hh"
 
 namespace network
@@ -20,8 +22,8 @@ namespace network
       void start();
       void stop();
 
-      unsigned add_task(std::vector<uint64_t>& params);
-      task::Task& get_task_result(unsigned id);
+      unsigned add_task(std::string& bytecode);
+      std::string get_task_result(unsigned id);
 
       inline NetworkMode get_mode()
       {
@@ -29,12 +31,13 @@ namespace network
       }
 
     private:
+      std::shared_ptr<Server> srv_;
+      std::shared_ptr<Slave> slv_;
       std::thread svc_th_;
       network::NetworkMode mode_;
       std::atomic<bool> ready_;
       std::atomic<bool> alive_;
       unsigned task_id_counter_;
-      std::unordered_map<unsigned, task::Task> tasks_;
 
       void run();
       void client_thread();
