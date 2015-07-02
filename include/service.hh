@@ -9,6 +9,7 @@
 # include "task.hh"
 # include "slave.hh"
 # include "server.hh"
+# include "ts_queue.hxx"
 # include "network_mode.hh"
 
 namespace network
@@ -22,7 +23,9 @@ namespace network
       void start();
       void stop();
 
-      unsigned add_task(std::string& bytecode);
+      unsigned submit_task(std::string bytecode);
+      std::string get_task();
+      void submit_task_result(std::string result);
       std::string get_task_result(unsigned id);
 
       inline NetworkMode get_mode()
@@ -38,6 +41,8 @@ namespace network
       std::atomic<bool> ready_;
       std::atomic<bool> alive_;
       unsigned task_id_counter_;
+      utils::TSQueue<std::string> bytecodes_;
+      utils::TSQueue<std::string> results_;
 
       void run();
       void client_thread();

@@ -25,9 +25,14 @@ void Service::stop()
   svc_th_.join();
 }
 
-unsigned Service::add_task(std::string& bytecode)
+unsigned Service::submit_task(std::string bytecode)
 {
   return srv_->execBytecode(bytecode);
+}
+
+std::string Service::get_task()
+{
+  return bytecodes_.dequeue();
 }
 
 std::string Service::get_task_result(unsigned id)
@@ -38,6 +43,11 @@ std::string Service::get_task_result(unsigned id)
     std::this_thread::yield();
 
   return r->value;
+}
+
+void Service::submit_task_result(std::string result)
+{
+  results_.enqueue(result);
 }
 
 void Service::run()
@@ -64,8 +74,9 @@ void Service::client_thread()
   while (alive_.load(std::memory_order_acquire))
   {
     std::string bytecode = slv_->getBytecode();
-    //TODO: use thread-safe consumer/producer with VM to pass bytecode
-    slv_->send_bytecode(bytecode);
+
+    bytecodes_.enqueue(bytecode);
+    slv_->send_bytecode(results_.dequeue());
   }
 }
 
