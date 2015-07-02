@@ -13,7 +13,7 @@ namespace utils
     public:
       void enqueue(T e)
       {
-        std::unique_lock<std::mutex> l(mut_);
+        std::lock_guard<std::mutex> l(mut_);
 
         queue_.push(e);
 
@@ -30,6 +30,13 @@ namespace utils
         queue_.pop();
 
         return e;
+      }
+
+      bool empty()
+      {
+        std::lock_guard<std::mutex> l(mut_);
+
+        return queue_.empty();
       }
 
     private:
