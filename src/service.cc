@@ -56,6 +56,7 @@ void Service::run()
 
 void Service::client_thread()
 {
+  slv_.reset();
   slv_ = std::make_unique<Slave>();
 
   ready();
@@ -70,6 +71,7 @@ void Service::client_thread()
 
 void Service::server_thread()
 {
+  srv_.reset();
   srv_ = std::make_unique<Server>();
 
   ready();
