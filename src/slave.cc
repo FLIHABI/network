@@ -124,8 +124,7 @@ void Slave::connectToServer(std::string ip, int port)
     }
 
     if (p == NULL) {
-        fprintf(stderr, "client: failed to connect\n");
-        return;
+        throw std::runtime_error("Failed to connect");
     }
 
     inet_ntop(p->ai_family, Utils::get_in_addr((struct sockaddr *)p->ai_addr),
