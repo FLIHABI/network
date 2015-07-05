@@ -1,4 +1,3 @@
-#include <iostream>
 #include "service.hh"
 
 using namespace network;
@@ -75,9 +74,9 @@ void Service::client_thread()
   while (alive_.load(std::memory_order_acquire))
   {
     std::string bytecode = slv_->getBytecode();
-
     bytecodes_.enqueue(bytecode);
-    auto test = results_.dequeue();
+    if (bytecode.length() == 0)
+        return;
     slv_->send_bytecode(results_.dequeue());
   }
 }

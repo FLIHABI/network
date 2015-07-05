@@ -11,6 +11,7 @@
  */
 
 #include "utils.hh"
+#include <stdexcept>
 #include <iostream>
 
 // get sockaddr, IPv4 or IPv6:
@@ -34,6 +35,8 @@ unsigned int Utils::recvBytecodeLen(int socket)
         perror("Server recv: failed receiving bytecode");
         return -1;
     }
+    if (nbytes == 0)
+        return -1;
     unsigned int len;
     memcpy(&len, &clen[0], sizeof(unsigned int));
     return len;
