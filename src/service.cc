@@ -1,3 +1,4 @@
+#include <iostream>
 #include "service.hh"
 
 using namespace network;
@@ -76,6 +77,7 @@ void Service::client_thread()
     std::string bytecode = slv_->getBytecode();
 
     bytecodes_.enqueue(bytecode);
+    auto test = results_.dequeue();
     slv_->send_bytecode(results_.dequeue());
   }
 }

@@ -39,7 +39,7 @@ unsigned int Utils::recvBytecodeLen(int socket)
     return len;
 }
 
-ssize_t Utils::sendBytecode(int socket, std::string buffer, unsigned int len)
+ssize_t Utils::sendBytecode(int socket, std::string& buffer, unsigned int len)
 {
     std::cout << "Send: ";
     for (unsigned i = 0; i < len; i++)

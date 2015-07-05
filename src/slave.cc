@@ -69,7 +69,7 @@ std::string Slave::getBytecode()
 
 int Slave::send_bytecode(std::string bytecode)
 {
-    if (Utils::sendBytecode(sockfd_, bytecode.c_str(), bytecode.size()) == -1)
+    if (Utils::sendBytecode(sockfd_, bytecode, bytecode.size()) == -1)
     {
         perror("Client thread: failed sending bytecode");
         return -1;
