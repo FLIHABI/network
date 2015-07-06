@@ -33,8 +33,8 @@ class Utils
 
     // Network protocoled functions
 
-    static unsigned int recvBytecodeLen(int socket);
-    static ssize_t sendBytecode(int socket, std::string& buffer, unsigned int len);
+    static uint64_t recvBytecodeLen(int socket);
+    static uint64_t sendBytecode(int socket, std::string& buffer, unsigned int len);
 };
 
 #endif   /* !UTILS_HH */

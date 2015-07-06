@@ -199,15 +199,15 @@ void Server::clientThread(Server *s, int sockfd)
         }
         std::cout << "\n==\n";
         // Sending Bytecode
-        if (Utils::sendBytecode(sockfd, t->bytecode, t->bytecode.size()) == -1)
+        if (Utils::sendBytecode(sockfd, t->bytecode, t->bytecode.size()) == (uint64_t) -1)
         {
             perror("Client thread: failed sending bytecode");
             s->todo_.push(t);
             break;
         }
-        int nbytes;
-        int len;
-        if ((len = Utils::recvBytecodeLen(sockfd)) == -1)
+        uint64_t nbytes;
+        uint64_t len;
+        if ((len = Utils::recvBytecodeLen(sockfd)) == (uint64_t) -1)
         {
             perror("Client thread: fail to get bytecode len");
             s->todo_.push(t);
@@ -215,7 +215,7 @@ void Server::clientThread(Server *s, int sockfd)
         }
         char *buf = (char*) malloc(len);
         // Receiving connection msg
-        if ((nbytes = recv(sockfd, buf, len, 0)) == -1)
+        if ((nbytes = recv(sockfd, buf, len, 0)) == (uint64_t) -1)
         {
             perror("Client thread: failed receiving bytecode");
             s->todo_.push(t);

@@ -26,23 +26,24 @@ void* Utils::get_in_addr(struct sockaddr *sa)
 
 // Network protocoled functions
 
-unsigned int Utils::recvBytecodeLen(int socket)
+uint64_t Utils::recvBytecodeLen(int socket)
 {
     int nbytes = -1;
-    char clen[sizeof(unsigned int)];
-    if ((nbytes = recv(socket, clen, sizeof(unsigned int), 0)) == -1)
+    char clen[sizeof(uint64_t)];
+    if ((nbytes = recv(socket, clen, sizeof(uint64_t), 0)) == -1)
     {
         perror("Server recv: failed receiving bytecode");
         return -1;
     }
     if (nbytes == 0)
         return -1;
-    unsigned int len;
-    memcpy(&len, &clen[0], sizeof(unsigned int));
+    uint64_t len;
+    memcpy(&len, &clen[0], sizeof(uint64_t));
+    std::cout << "Receive " << len << "elts." << std::endl;
     return len;
 }
 
-ssize_t Utils::sendBytecode(int socket, std::string& buffer, unsigned int len)
+uint64_t Utils::sendBytecode(int socket, std::string& buffer, uint64_t len)
 {
     std::cout << "Send: ";
     for (unsigned i = 0; i < len; i++)
@@ -53,15 +54,16 @@ ssize_t Utils::sendBytecode(int socket, std::string& buffer, unsigned int len)
             printf("\\%02X", buffer[i]);
     }
     std::cout << "\n==\n";
-    char clen[sizeof(unsigned int)];
-    ssize_t size = 0;
-    memcpy(&clen[0], &len, sizeof(unsigned int));
+    char clen[sizeof(uint64_t)];
+    uint64_t size = 0;
+    memcpy(&clen[0], &len, sizeof(uint64_t));
     if (send(socket, clen, sizeof(clen), 0) == -1)
     {
+        std::cout << "Send " << len << "elts." << std::endl;
         perror("Send: failed sending bytecode length!");
         return -1;
     }
-    if ((size = send(socket, buffer.c_str(), len, 0)) == -1)
+    if ((size = send(socket, buffer.c_str(), len, 0)) == (uint64_t)-1)
         perror("Send: failed sending bytecode!");
     return size;
 }
