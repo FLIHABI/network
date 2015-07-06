@@ -39,9 +39,9 @@ Slave::Slave()
 
 std::string Slave::getBytecode()
 {
-    int nbRecv;
-    int len;
-    if ((len = Utils::recvBytecodeLen(sockfd_)) == -1)
+    ssize_t nbytes;
+    uint64_t len;
+    if ((len = Utils::recvBytecodeLen(sockfd_)) == (uint64_t) -1)
     {
         perror("Slave: failed to recv bytecode len");
         return "";
@@ -49,13 +49,19 @@ std::string Slave::getBytecode()
     char *buf = (char*) malloc(len);
     memset(buf, 0, len);
     std::cout << "Slave: Waiting for " << len << " bytes" << std::endl;
-    if ((nbRecv = recv(sockfd_, buf, len, 0)) == -1)
+    char *aux = buf;
+    // Receiving connection msg
+    while (len > 0)
     {
-        perror("Slave: failed to recv bytecode");
-        return "";
+        if (len < 4096)
+            nbytes = recv(sockfd_, aux, len, 0);
+        else
+            nbytes = recv(sockfd_, aux, 4096, 0);
+        len -= nbytes;
+        aux += nbytes;
+
     }
-    printf("Slave: received %u bytes:\n", nbRecv);
-    for (int i = 0; i < len; i++)
+    for (uint64_t i = 0; i < len; i++)
     {
         if (buf[i] <= '~' && buf[i] >= ' ')
             printf("%c", buf[i]);
@@ -64,12 +70,12 @@ std::string Slave::getBytecode()
     }
     printf("\n");
 
-    return std::string(buf, nbRecv);
+    return std::string(buf, len);
 }
 
 int Slave::send_bytecode(std::string bytecode)
 {
-    if (Utils::sendBytecode(sockfd_, bytecode, bytecode.size()) == -1)
+    if (Utils::sendBytecode(sockfd_, bytecode, bytecode.size()) == (uint64_t)-1)
     {
         perror("Client thread: failed sending bytecode");
         return -1;

@@ -55,7 +55,7 @@ uint64_t Utils::sendBytecode(int socket, std::string& buffer, uint64_t len)
     }
     std::cout << "\n==\n";
     char clen[sizeof(uint64_t)];
-    uint64_t size = 0;
+    ssize_t size = 0;
     memcpy(&clen[0], &len, sizeof(uint64_t));
     if (send(socket, clen, sizeof(clen), 0) == -1)
     {
@@ -63,7 +63,8 @@ uint64_t Utils::sendBytecode(int socket, std::string& buffer, uint64_t len)
         perror("Send: failed sending bytecode length!");
         return -1;
     }
-    if ((size = send(socket, buffer.c_str(), len, 0)) == (uint64_t)-1)
+    if ((size = send(socket, buffer.c_str(), len, 0)) == -1)
         perror("Send: failed sending bytecode!");
+    std::cout << "Send " << size << "elts." << std::endl;
     return size;
 }

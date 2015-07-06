@@ -205,7 +205,7 @@ void Server::clientThread(Server *s, int sockfd)
             s->todo_.push(t);
             break;
         }
-        uint64_t nbytes;
+        ssize_t nbytes;
         uint64_t len;
         if ((len = Utils::recvBytecodeLen(sockfd)) == (uint64_t) -1)
         {
@@ -214,25 +214,45 @@ void Server::clientThread(Server *s, int sockfd)
             break;
         }
         char *buf = (char*) malloc(len);
+        char *aux = buf;
         // Receiving connection msg
-        if ((nbytes = recv(sockfd, buf, len, 0)) == (uint64_t) -1)
+        while (len > 0)
         {
-            perror("Client thread: failed receiving bytecode");
-            s->todo_.push(t);
+            if (len < 4096)
+                nbytes = recv(sockfd, aux, len, 0);
+            else
+                nbytes = recv(sockfd, aux, 4096, 0);
+            if (nbytes == -1)
+            {
+                perror("Client thread: failed receiving bytecode");
+                s->todo_.push(t);
+                break;
+            }
+            if (nbytes == 0)
+            {
+                std::cout << "Client thread: Connection seems to be reset."
+                    << std::endl;
+                s->todo_.push(t);
+                close(sockfd);
+                break;
+            }
+            len -= nbytes;
+            aux += nbytes;
+
+        }
+        if (nbytes == -1)
+        {
+            return;
         }
         if (nbytes == 0)
         {
-            std::cout << "Client thread: Connection seems to be reset."
-                << std::endl;
-            s->todo_.push(t);
-            close(sockfd);
             break;
         }
         // Setting result
         /* TODO: Test if r is persistant */
         std::cout << "Server got returned bytecode\n";
         Result *r = new Result();
-        r->value = std::string(buf, nbytes);
+        r->value = std::string(buf, len);
         s->setResult(t->id, r);
     }
 }
