@@ -189,14 +189,16 @@ void Server::clientThread(Server *s, int sockfd)
         while ((t = s->todo_.pop()) == NULL); // Try to get bytecode to exec
 
         std::cout << "Server thread opening task:\n";
+            /*
         const char *buffer = t->bytecode.c_str();
         for (unsigned i = 0; i < t->bytecode.size(); i++)
         {
-            if (buffer[i] <= '~' && buffer[i] >= ' ')
-                printf("%c", buffer[i]);
-            else
-                printf("\\%02X", buffer[i]);
+               if (buffer[i] <= '~' && buffer[i] >= ' ')
+               printf("%c", buffer[i]);
+               else
+               printf("\\%02X", buffer[i]);
         }
+            */
         std::cout << "\n==\n";
         // Sending Bytecode
         if (Utils::sendBytecode(sockfd, t->bytecode, t->bytecode.size()) == (uint64_t) -1)
@@ -213,6 +215,7 @@ void Server::clientThread(Server *s, int sockfd)
             s->todo_.push(t);
             break;
         }
+        uint64_t len_aux = len;
         char *buf = (char*) malloc(len);
         char *aux = buf;
         // Receiving connection msg
@@ -252,7 +255,8 @@ void Server::clientThread(Server *s, int sockfd)
         /* TODO: Test if r is persistant */
         std::cout << "Server got returned bytecode\n";
         Result *r = new Result();
-        r->value = std::string(buf, len);
+        r->value = std::string(buf, len_aux);
         s->setResult(t->id, r);
+        free(buf);
     }
 }

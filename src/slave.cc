@@ -23,6 +23,7 @@
 #include <netdb.h>
 #include <iostream>
 #include <string>
+#include <stdexcept>
 
 #include "utils.hh"
 #include "network.hh"
@@ -41,6 +42,7 @@ std::string Slave::getBytecode()
 {
     ssize_t nbytes;
     uint64_t len;
+    uint64_t len_aux;
     if ((len = Utils::recvBytecodeLen(sockfd_)) == (uint64_t) -1)
     {
         perror("Slave: failed to recv bytecode len");
@@ -50,6 +52,7 @@ std::string Slave::getBytecode()
     memset(buf, 0, len);
     std::cout << "Slave: Waiting for " << len << " bytes" << std::endl;
     char *aux = buf;
+    len_aux = len;
     // Receiving connection msg
     while (len > 0)
     {
@@ -61,7 +64,7 @@ std::string Slave::getBytecode()
         aux += nbytes;
 
     }
-    for (uint64_t i = 0; i < len; i++)
+    for (uint64_t i = 0; i < len_aux; i++)
     {
         if (buf[i] <= '~' && buf[i] >= ' ')
             printf("%c", buf[i]);
@@ -70,7 +73,7 @@ std::string Slave::getBytecode()
     }
     printf("\n");
 
-    return std::string(buf, len);
+    return std::string(buf, len_aux);
 }
 
 int Slave::send_bytecode(std::string bytecode)

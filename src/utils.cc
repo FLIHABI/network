@@ -46,6 +46,7 @@ uint64_t Utils::recvBytecodeLen(int socket)
 uint64_t Utils::sendBytecode(int socket, std::string& buffer, uint64_t len)
 {
     std::cout << "Send: ";
+    /*
     for (unsigned i = 0; i < len; i++)
     {
         if (buffer[i] <= '~' && buffer[i] >= ' ')
@@ -53,6 +54,7 @@ uint64_t Utils::sendBytecode(int socket, std::string& buffer, uint64_t len)
         else
             printf("\\%02X", buffer[i]);
     }
+    */
     std::cout << "\n==\n";
     char clen[sizeof(uint64_t)];
     ssize_t size = 0;
